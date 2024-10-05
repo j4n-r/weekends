@@ -1,5 +1,5 @@
 # weekends
-Inspired by @Tsoding who does recreational Programming sessions on Twitch and Youtube.
+Inspired by @Tsoding who does recreational rrogramming sessions on Twitch and Youtube.
 
 The plan is to create one small project every weekend which takes 2-10 hours. 
 Most of them will be around networking and trying out technology.
@@ -10,4 +10,4 @@ But I will try to not have enormous amounts of memory leaks or completely
 unfinished projects (...).
 
 Directory naming:
-- {date(YYYY-MM-DD)}_{language}_{name}
+- {date(YYYY-MM-DD)}\_{language}\_{name}
