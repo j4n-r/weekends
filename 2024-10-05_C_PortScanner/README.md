@@ -1,6 +1,7 @@
 ### 1st Portscanner in C 
-
 Simple TCP scan with connect() works.
+![image](https://github.com/user-attachments/assets/6af0d7c2-807a-4956-8d1d-51f242d6dd8d)
+
 Was not able to make UDP work atm, it looks like 
 you have to craft custom packages for that. 
 
