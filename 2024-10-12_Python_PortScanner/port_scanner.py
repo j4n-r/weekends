@@ -8,11 +8,16 @@ def main(argv):
     min_port =int (port_range[0])
     max_port = int (port_range[1])
     curr_port = int(min_port)
-    for curr_port in range(max_port):
-        try :
+    for curr_port in range(min_port, max_port):
+        try:
             sock = socket.socket()
+            sock.settimeout(1)
             sock.connect((ipaddress, curr_port))
-            print(f"Port {curr_port} is open")
+            try:
+                data = sock.recv(4096)  
+                print(f"Port {curr_port} is open and received data: {data}")
+            except socket.timeout:
+                print(f"Port {curr_port} is open, but no data received.")
             sock.close()
         except socket.error:
             continue
