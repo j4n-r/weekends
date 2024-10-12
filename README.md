@@ -11,3 +11,9 @@ unfinished projects (...).
 
 Directory naming:
 - {date(YYYY-MM-DD)}\_{language}\_{name}
+
+## Idea list 
+- [ ] Networkscaner in Python
+- [ ] UDP Network scan in C 
+- [ ] Packet captue tool with different Network interface support  
+- [ ] Real time dashboard in js streaming a data stream out of c or python
