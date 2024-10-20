@@ -11,13 +11,14 @@ void calc_ws_key(httpM* response, httpM* request);
 void init_websocket(httpM* res, httpM* req);
 int routeRequest(httpM* response, httpM* request) {
 
+    // handle websocket
+    if (strncmp(request->path, "websocket", PATHBUFSIZE)) {
+        init_websocket(response, request);
+    }
     // handle GET
-    if (request->method == 0) {
+    else if (request->method == 0) {
         if (strncmp(request->path, "getTasks", PATHBUFSIZE)) {
             getTasks(response, request);
-        }
-        if (strncmp(request->path, "websocket", PATHBUFSIZE)) {
-            init_websocket(response, request);
         }
         handleGetRequest(response, request);
         // handle POST
@@ -68,13 +69,15 @@ int postTask(httpM* response, httpM* request) {
 }
 
 void init_websocket(httpM* response, httpM* request) {
+    ws_h ws_h = {};
+    response->headers->ws_h = &ws_h;
     calc_ws_key(response, request);
 }
 
 void calc_ws_key(httpM* response, httpM* request) {
-    char res_key[48] = {};
-    char res_key_base64[64];
-    char req_key[48] = {};
+    char res_key[128] = {};
+    char res_key_base64[128];
+    char req_key[128] = {};
     char* key_start = strstr(request->message, "Sec-WebSocket-Key:");
     unsigned char sha1_hash[SHA_DIGEST_LENGTH];
     const char* websocket_guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
@@ -100,8 +103,14 @@ void calc_ws_key(httpM* response, httpM* request) {
     SHA1((unsigned char*)req_key, strlen(req_key), sha1_hash);
     EVP_EncodeBlock((unsigned char*)res_key_base64, sha1_hash,
                     SHA_DIGEST_LENGTH);
-    strcpy(response->headers->ws_h->ws_key, res_key_base64);
-    fillResHeaders(response, request);
+    printf("res key = %s\n", res_key_base64);
+    strncpy(response->headers->ws_h->ws_key, res_key_base64,
+            sizeof(response->headers->ws_h->ws_key) - 1);
+    response->headers->ws_h
+        ->ws_key[sizeof(response->headers->ws_h->ws_key) - 1] =
+        '\0'; // Ensure null-termination
+    int msg_len = fillResHeaders(response, request);
+    printf("Response message is: %d bytes \n", msg_len);
 }
 
 int handleGetRequest(httpM* response, httpM* request) {

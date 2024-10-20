@@ -129,10 +129,11 @@ size_t fillResHeaders(httpM* response, httpM* request) {
 
     if (strlen(response->headers->ws_h->ws_key) > 0) {
         snprintf(response->message, HEADERBUFSIZE,
-                 "HTTP/1.1 101 Switching Protocols"
-                 "Upgrade: websocket"
-                 "Connection: Upgrade"
-                 "Sec-WebSocket-Accept: %s",
+                 "HTTP/1.1 101 Switching Protocols\r\n"
+                 "Upgrade: websocket\r\n"
+                 "Connection: Upgrade\r\n"
+                 "Sec-WebSocket-Accept: %s\r\n"
+                 "\r\n",
                  response->headers->ws_h->ws_key);
     } else {
         snprintf(response->message, HEADERBUFSIZE,

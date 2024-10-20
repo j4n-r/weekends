@@ -41,7 +41,7 @@ typedef struct ws_h {
     char connection[48];
     char ws_accept[48];
     char ws_ver[48];
-    char ws_key[48];
+    char ws_key[128];
 } ws_h;
 
 typedef struct httpHeaders {
