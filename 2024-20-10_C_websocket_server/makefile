@@ -17,7 +17,7 @@ SRCDIR = webserver
 OUTDIR = $(SRCDIR)/out
 
 # Source files and corresponding object files
-SOURCES = $(SRCDIR)/server.c $(SRCDIR)/utils.c $(SRCDIR)/endpoints.c
+SOURCES = $(SRCDIR)/server.c $(SRCDIR)/utils.c $(SRCDIR)/endpoints.c $(SRCDIR)/ws_server.c
 OBJECTS = $(patsubst $(SRCDIR)/%.c,$(OUTDIR)/%.o,$(SOURCES))
 
 # Target executable

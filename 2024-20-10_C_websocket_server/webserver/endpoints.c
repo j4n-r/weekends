@@ -1,77 +1,77 @@
 #include "server.h"
-#include "ws_server.c"
+#include "ws_server.h"
 #include <string.h>
 
-int getTasks(httpM* response, httpM* request);
-int handleGetRequest(httpM* response, httpM* request);
-int postTask(httpM* response, httpM* request);
-int routeRequest(httpM* response, httpM* request) {
+int getTasks(httpM *response, httpM *request);
+int handleGetRequest(httpM *response, httpM *request);
+int postTask(httpM *response, httpM *request);
+int routeRequest(httpM *response, httpM *request) {
 
-    // handle websocket
-    if (strncmp(request->path, "websocket", PATHBUFSIZE)) {
-        init_websocket(response, request);
-    }
-    // handle GET
-    else if (request->method == 0) {
-        if (strncmp(request->path, "getTasks", PATHBUFSIZE)) {
-            getTasks(response, request);
-        }
-        handleGetRequest(response, request);
-        // handle POST
-    } else if (request->method == 1) {
-        if (strcmp(request->path, "tasks")) {
-            return postTask(response, request);
-        }
-    }
+	// handle websocket
+	if (strncmp(request->path, "websocket", PATHBUFSIZE)) {
+		init_websocket(response, request);
+	}
+	// handle GET
+	else if (request->method == 0) {
+		if (strncmp(request->path, "getTasks", PATHBUFSIZE)) {
+			getTasks(response, request);
+		}
+		handleGetRequest(response, request);
+		// handle POST
+	} else if (request->method == 1) {
+		if (strcmp(request->path, "tasks")) {
+			return postTask(response, request);
+		}
+	}
 
-    return 0;
+	return 0;
 }
 
-int getTasks(httpM* response, httpM* request) {
-    int bytesRead = readFile(response->body, DATABASE_URL);
-    printf("Butes read: %d\n", bytesRead);
-    for (int i = 0; i < strlen(response->body); i++) {
-        if (response->body[i] == '-') {
-            response->body[i] = ';';
-            continue;
-        }
-        if (response->body[i] == '[') {
-            response->body[i] = ' ';
-            continue;
-        }
-        if (response->body[i] == ']') {
-            response->body[i] = ' ';
-            continue;
-        }
-    }
+int getTasks(httpM *response, httpM *request) {
+	int bytesRead = readFile(response->body, DATABASE_URL);
+	printf("Butes read: %d\n", bytesRead);
+	for (int i = 0; i < strlen(response->body); i++) {
+		if (response->body[i] == '-') {
+			response->body[i] = ';';
+			continue;
+		}
+		if (response->body[i] == '[') {
+			response->body[i] = ' ';
+			continue;
+		}
+		if (response->body[i] == ']') {
+			response->body[i] = ' ';
+			continue;
+		}
+	}
 
-    parseContentTypeFromPath(response, request);
-    response->method = POST;
-    strcpy(response->path, "/getTasks");
-    // construct httpHeaders
-    fillReqHeaders(response, request);
-    // copy body into message, headers should already be there
-    strncat(response->message, response->body, BUFSIZE + HEADERBUFSIZE);
-    return 1;
+	parseContentTypeFromPath(response, request);
+	response->method = POST;
+	strcpy(response->path, "/getTasks");
+	// construct httpHeaders
+	fillReqHeaders(response, request);
+	// copy body into message, headers should already be there
+	strncat(response->message, response->body, BUFSIZE + HEADERBUFSIZE);
+	return 1;
 }
 
-int postTask(httpM* response, httpM* request) {
-    char tmp[BUFSIZE];
-    snprintf(tmp, BUFSIZE - 8, "- [ ] %s\n", request->body);
+int postTask(httpM *response, httpM *request) {
+	char tmp[BUFSIZE];
+	snprintf(tmp, BUFSIZE - 8, "- [ ] %s\n", request->body);
 
-    strcpy(request->body, tmp);
-    writeFile(request->body, DATABASE_URL);
-    return 0;
+	strcpy(request->body, tmp);
+	writeFile(request->body, DATABASE_URL);
+	return 0;
 }
-int handleGetRequest(httpM* response, httpM* request) {
-    // read file into body
-    response->headers->contentLength = readFile(response->body, request->path);
-    // getContentType
-    parseContentTypeFromPath(response, request);
-    // construct httpHeaders
-    fillResHeaders(response, request);
-    // copy body into message, headers should already be there
-    strncat(response->message, response->body, BUFSIZE + HEADERBUFSIZE);
+int handleGetRequest(httpM *response, httpM *request) {
+	// read file into body
+	response->headers->contentLength = readFile(response->body, request->path);
+	// getContentType
+	parseContentTypeFromPath(response, request);
+	// construct httpHeaders
+	fillResHeaders(response, request);
+	// copy body into message, headers should already be there
+	strncat(response->message, response->body, BUFSIZE + HEADERBUFSIZE);
 
-    return 1;
+	return 1;
 }

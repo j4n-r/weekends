@@ -55,6 +55,7 @@ typedef struct httpHeaders {
 
 
 typedef struct httpMessage {
+    int fd_socket;
     method method;
     httpH* headers;
     char path[PATHBUFSIZE];
