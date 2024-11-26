@@ -8,3 +8,4 @@ Directory naming:
 - [ ] Networkscaner in Python (UDP)
 - [ ] UDP Network scan in C 
 - [ ] Custom malloc
+- [ ] fuzzy search
